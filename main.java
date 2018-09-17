@@ -11,8 +11,6 @@ public class main {
         root.initializeGraph();
         Scanner kb = new Scanner(System.in);
 
-
-        System.out.println("Please enter in your activity name followed by the duration.");
         //Function to print the graph
         root.printGraph(root);
 
