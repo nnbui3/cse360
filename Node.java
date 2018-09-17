@@ -1,11 +1,17 @@
 import java.util.*;
 
 public class Node {
+
+    //SIZE IS CURRENTLY SET TO 5, IF YOU WANT TO CHANGE THE SIZE.
+    //PLEASE CHANGE IT HERE ONLY.
+    final int SIZE = 5;
+
     private String activityName;
     private int duration;
     private List<Node> dependencies;
-    public ArrayList<Node> test = new ArrayList<Node>(5);
-    LinkedList<Node> adjListArray[] = new LinkedList[5];
+    public ArrayList<Node> test = new ArrayList<Node>(SIZE);
+    ArrayList<Node> decOrder = new ArrayList<Node>();
+    LinkedList<Node> adjListArray[] = new LinkedList[SIZE];
 
     //Default Constructor
     public Node()
@@ -50,17 +56,22 @@ public class Node {
     //Function to add dependencies with the prev Node and the current Node
     public void addDependencies(Node prev, Node now)
     {
-        //Set the dependencies to the array list of the current Node
-        now.dependencies.add(prev);
-
-        String prevString = prev.getActivityName();
-
-        //Loop to assign the Node to the right position
-        for (int y = 0; y < 5; y++)
+        if (prev.activityName.equals(now.activityName))
         {
-            if (adjListArray[y].get(0).getActivityName().equals(prevString))
-            {
-                adjListArray[y].addLast(now);
+            System.out.println("Sorry, but we can not add " + prev.getActivityName() + " to itself as a dependencies as this will cause a cycle.");
+            System.out.println("Please try again.");
+        }
+        else {
+            //Set the dependencies to the array list of the current Node
+            now.dependencies.add(prev);
+
+            String prevString = prev.getActivityName();
+
+            //Loop to assign the Node to the right position
+            for (int y = 0; y < SIZE; y++) {
+                if (adjListArray[y].get(0).getActivityName().equals(prevString)) {
+                    adjListArray[y].addLast(now);
+                }
             }
         }
     }
@@ -97,7 +108,7 @@ public class Node {
     public void initializeGraph ()
     {
         //Loop through the array and set the linked list (SIZE IS CURRENTLY 5)
-        for(int i = 0; i < 5 ; i++)
+        for(int i = 0; i < SIZE ; i++)
         {
             adjListArray[i] = new LinkedList<>();
         }
@@ -109,7 +120,7 @@ public class Node {
         int choice;
 
         //Loop through the array of linked list (SIZE IS CURRENTLY 5)
-        for (int counter = 0; counter < 5; counter++)
+        for (int counter = 0; counter < SIZE; counter++)
         {
             //If there is a duplicate, ask user to replace it or discard it
             if (adjListArray[counter].isEmpty() != true && adjListArray[counter].get(0).getActivityName() == current.getActivityName())
@@ -136,21 +147,46 @@ public class Node {
                 break;
             }
         }
-
-
     }
 
     //Function to print the graph
-    static void printGraph(Node graph)
+    public void printGraph(Node graph)
     {
-        for(int v = 0; v < 5; v++)
+        for(int v = 0; v < SIZE; v++)
         {
             System.out.println("Adjacency list of vertex "+ v);
             System.out.print("head");
-            for(Node pCrawl: graph.adjListArray[v]){
+            for(Node pCrawl: graph.adjListArray[v])
+            {
                 System.out.print(" -> "+pCrawl.getActivityName()+","+pCrawl.getDuration());
             }
             System.out.println("\n");
+        }
+    }
+
+    //Function to print the Node in descending order
+    public void printDecOrder (Node root)
+    {
+        //Loop to add all of the Nodes from the graph to the descending array list
+        for (int w = 0; w < SIZE; w++)
+        {
+            for(Node pCrawl: root.adjListArray[w])
+            {
+                decOrder.add(pCrawl);
+            }
+        }
+
+        //Custom comparator to compare the duration of the Nodes
+        Collections.sort(decOrder, new Comparator<Node>() {
+            @Override public int compare(Node node1, Node node2) {
+                return node2.getDuration() - node1.getDuration(); //Descending
+            }
+        });
+
+        //Loop to print out the array's content
+        for (int z = 0; z < SIZE; z++)
+        {
+            System.out.println(decOrder.get(z).getActivityName() + "," + decOrder.get(z).getDuration());
         }
     }
 }
