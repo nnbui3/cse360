@@ -39,6 +39,7 @@ public class main {
 
         //Function to print the graph
         root.printGraph(root);
+        
         System.out.println("------------------------------------");
         root.printDecOrder(root);
 
